@@ -1,3 +1,9 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
@@ -83,4 +89,31 @@ public class Main {
     private static void afegirProducteAlimentacio(){}
     private static void afegirProducteTextil(){}
     private static void afegirProducteElectronica(){}
+
+    //FITXER EXCEPTION:
+    //Mètode per guardar excepcions en un fitxer .dat
+    public static void logException(Exception e) {
+        try {
+            //Creem el fitxer on es registraran totes les excepcions.
+            File fitxer = new File("./logs/Exceptions.dat");
+            //Donem l'arxiu i el valor "true", aquest ultim és un indicador perquè afegeixi les dades al final de l'arxiu.
+            FileOutputStream file = new FileOutputStream(fitxer, true);
+            PrintStream writer = new PrintStream(file);
+
+            //Agafem la data amb l'hora i tots els detalls possibles perquè quedi constància de quan va succeir aquest excepció.
+            Date data = new Date(System.currentTimeMillis());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss");
+
+
+            //Escrivim al fitxer totes les excepcions.
+            writer.println("Excepció : " + simpleDateFormat.format(data) + " " + " : " + e.getMessage());
+            writer.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("- No es troba el fitxer");
+            logException(e);
+        } catch (Exception ex){
+            System.out.println("- No s'ha pogut escriure al fitxer");
+            logException(e);
+        }
+    }
 }

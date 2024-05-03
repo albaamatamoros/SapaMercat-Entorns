@@ -13,8 +13,47 @@ public class Main {
     private static final int MAX_CARRO = 100;
     private static final int MAX_LLARG = 15;
     public static void main(String[] args) {
+        //Cridem el mètode crearCarpetasIFitxers per crear les carpetes.
+        crearCarpetesIFitxers();
         //Cridem el mètode menuInici.
         menuInici();
+    }
+
+    //CREACIÓ CARPETAS I FITXERS:
+    public static void crearCarpetesIFitxers(){
+        File dir1 = new File("./updates");
+        File dir2 = new File("./logs");
+        File dat1 = new File("./updates/UpdateTextilPrices.dat");
+        File dat2 = new File("./logs/Exceptions.dat");
+        try {
+            boolean created = dir1.mkdirs();
+            if (created) {
+                System.out.println("updates creat correctament");
+            } else { //Si created = false significa que el directory ja a sigut creat, sino saltaria una excepció.
+                System.out.println("updates ja exsisteix");
+            }
+            boolean created2 = dir2.mkdirs();
+            if (created2) {
+                System.out.println("logs creat correctament\n");
+            } else { //Si created = false significa que el directory ja a sigut creat, sino saltaria una excepció.
+                System.out.println("logs ja exsisteix\n");
+            }
+            boolean created3 = dat1.createNewFile();
+            if (created3){
+                System.out.println("UpdateTextilPrices.dat creat correctament");
+            } else {
+                System.out.println("UpdateTextilPrices.dat ja exsisteix");
+            }
+            boolean created4 = dat2.createNewFile();
+            if (created4){
+                System.out.println("Exceptions.dat creat correctament\n");
+            } else {
+                System.out.println("Exceptions.dat ja exsisteix\n");
+            }
+        } catch (Exception e) {
+            System.out.println("Les carpetes/fitxers no s'han pogut crear correctament");
+            logException(e);
+        }
     }
 
     //MENÚ INICI:

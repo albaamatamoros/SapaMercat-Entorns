@@ -31,4 +31,16 @@ public abstract class Producte {
         return codiDeBarres;
     }
 
+    public void setCodiDeBarres(String codiDeBarres) {
+        this.codiDeBarres = codiDeBarres;
+    }
+
+    @Override
+    public String toString() {
+        return "Producte{" +
+                "preu=" + preu +
+                ", nom='" + nom + '\'' +
+                ", codiDeBarres=" + codiDeBarres +
+                '}';
+    }
 }

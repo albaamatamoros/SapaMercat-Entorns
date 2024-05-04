@@ -237,7 +237,53 @@ public class Main {
             logException(e);
         }
     }
-    private static void afegirProducteElectronica(){}
+    private static void afegirProducteElectronica(){
+        String nom;
+        float preu;
+        int garantia;
+        String codiBarres;
+
+        try {
+            //Fem un if per comprovar que al carro no entrin més de 100 productes.
+            if (productes.size() == MAX_CARRO){
+                System.out.println("El carro està ple");
+            } else {
+                //Afegir un electrònica al carro:
+                System.out.println("Afegir electrònica");
+
+                System.out.print("Nom producte (15 dígits MAX): ");
+                nom = scan.nextLine();
+
+                //Exception nom superior a 15 caràcters.
+                if (nom.length() > MAX_LLARG || nom.isEmpty()) throw new Exception("El nom del producte no pot ser superior a 15 ni pot estar buit");
+
+                System.out.print("preu (,): ");
+                preu = scan.nextFloat();
+                scan.nextLine();
+
+                //Exception preu inferior a 0.
+                if (preu < 0) throw new Exception("El preu no pot ser inferior a 0");
+
+                System.out.print("Garantia (dies): ");
+                garantia = scan.nextInt();
+                scan.nextLine();
+
+                System.out.print("Codi de barres (4 dígits): ");
+                codiBarres = scan.nextLine();
+
+                if (!codiBarres.matches("\\d{4}")) throw new IllegalArgumentException("El codi de barres ha de ser de 4 digits i només pot contenir números");
+
+                //Creem l'objecte Electronica i el fiquem a l'arraylist productes.
+                productes.add(new Electronica(preu, nom, codiBarres, garantia));
+            }
+        }catch (InputMismatchException e) {
+            System.out.println("Les dades introduïdes no són del tipus de dades demanades");
+            logException(e);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            logException(e);
+        }
+    }
 
     //TEXTIL REPETIT:
     //Comprovem que el producte textil no estigui repetit.

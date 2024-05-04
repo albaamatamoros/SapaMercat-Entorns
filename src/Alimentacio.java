@@ -1,3 +1,5 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Alimentacio extends Producte{
@@ -29,6 +31,12 @@ public class Alimentacio extends Producte{
 
         //Retornem el nou preu del producte basant-nos en els dies que li queden per caducar.
         return (float) (preu - preu*(1 /(dias+1)) - (preu * 0.1));
+    }
+
+    //Amb aquest mètode comprovem si la data introduïda és correcte al format especificat.
+    public static void correctData(String dataString) throws ParseException {
+        SimpleDateFormat correctFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date data = correctFormat.parse(dataString);
     }
 
     @Override

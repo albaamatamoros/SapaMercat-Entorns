@@ -2,12 +2,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
     static Scanner scan = new Scanner(System.in);
+    //ARRAYLIST i HASHMAP
+    static ArrayList<Producte> productes = new ArrayList<>();
+    static ArrayList<Producte> prodTextil = new ArrayList<>();
     //VARIABLES GLOBALS
     static String opcio;
     private static final int MAX_CARRO = 100;
@@ -73,6 +79,7 @@ public class Main {
             switch (opcio) {
                 case "1":
                     //Mostrem el menú de productes
+                    introduirProducte();
                     break;
                 case "2":
                     break;
@@ -125,7 +132,57 @@ public class Main {
 
     //AFEGIR PRODUCTES:
     //Mètode per afegir un producte alimentacio.
-    private static void afegirProducteAlimentacio(){}
+    private static void afegirProducteAlimentacio(){
+        String nom;
+        float preu;
+        String dataCaducitat;
+        String codiBarres;
+        try {
+            //Fem un if per comprovar que al carro no entrin més de 100 productes.
+            if (productes.size() == MAX_CARRO){
+                System.out.println("El carro està ple");
+            } else {
+                //Afegir un aliment al carro:
+                System.out.println("Afegir aliment");
+
+                System.out.print("Nom producte (15 dígits MAX): ");
+                nom = scan.nextLine();
+
+                //Exception nom superior a 15 caràcters ni pot estar buit.
+                if (nom.length() > MAX_LLARG || nom.isEmpty()) throw new Exception("El nom del producte no pot ser superior a 15 ni pot estar buit");
+
+                System.out.print("preu (,): ");
+                preu = scan.nextFloat();
+                scan.nextLine();
+
+                //Exception preu inferior a 0.
+                if (preu < 0) throw new Exception("El preu no pot ser inferior a 0");
+
+                System.out.print("Codi de barres (4 dígits): ");
+                codiBarres = scan.nextLine();
+
+                if (!codiBarres.matches("\\d{4}")) throw new IllegalArgumentException("El codi de barres ha de ser de 4 digits i només pot contenir números");
+
+                System.out.print("Data de caducitat (dd/MM/yyyy): ");
+                dataCaducitat = scan.nextLine();
+
+                //Cridem el mètode correctData per verificar el format de dataCaducita.
+                Alimentacio.correctData(dataCaducitat);
+
+                //Creem l'objecte Alimentació i el fiquem a l'arraylist productes.
+                productes.add(new Alimentacio(preu, nom, codiBarres, dataCaducitat));
+            }
+        } catch (ParseException e) {
+            System.out.println("El format de data de caducitat no és correcte");
+            logException(e);
+        } catch (InputMismatchException e) {
+            System.out.println("Les dades introduïdes no són del tipus de dades demanades");
+            logException(e);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            logException(e);
+        }
+    }
     private static void afegirProducteTextil(){}
     private static void afegirProducteElectronica(){}
 

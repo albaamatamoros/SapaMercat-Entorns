@@ -183,8 +183,74 @@ public class Main {
             logException(e);
         }
     }
-    private static void afegirProducteTextil(){}
+    private static void afegirProducteTextil(){
+        String nom;
+        float preu;
+        String composicio;
+        String codiBarres;
+        try {
+            //Fem un if per comprovar que al carro no entrin més de 100 productes.
+            if (productes.size() == MAX_CARRO){
+                System.out.println("El carro està ple");
+            } else {
+                //Afegir un tèxtil al carro:
+                System.out.println("Afegir tèxtil");
+
+                System.out.print("Nom producte (15 dígits MAX): ");
+                nom = scan.nextLine();
+
+                //Exception nom superior a 15 caràcters.
+                if (nom.length() > MAX_LLARG || nom.isEmpty()) throw new Exception("El nom del producte no pot ser superior a 15 ni pot estar buit");
+
+                System.out.print("preu (,): ");
+                preu = scan.nextFloat();
+                scan.nextLine();
+
+                //Exception preu inferior a 0.
+                if (preu < 0) throw new Exception("El preu no pot ser inferior a 0");
+
+                System.out.print("Composició: ");
+                composicio = scan.nextLine();
+
+                if (!composicio.matches("^[a-zA-Z]+$")) throw new IllegalArgumentException("La composició no pot contenir números només lletres");
+
+                System.out.print("Codi de barres (4 dígits): ");
+                codiBarres = scan.nextLine();
+
+                if (!codiBarres.matches("\\d{4}")) throw new IllegalArgumentException("El codi de barres ha de ser de 4 digits i només pot contenir números");
+
+                //Comprovem que no es repeteixin dos prod tèxtil iguals.
+                if (textilRepetit(codiBarres)){
+                    System.out.println("No es pot repetir el codi de barres d'un producte textil");
+                } else {
+                    //Creem l'objecte Textil i el fiquem a l'arraylist productes.
+                    productes.add(new Textil(preu, nom, codiBarres, composicio));
+                    //Creem l'objecte Textil i el fiquem a l'arraylist prodTextil productes.
+                    prodTextil.add(new Textil(preu, nom, codiBarres, composicio));
+                }
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Les dades introduïdes no són del tipus de dades demanades");
+            logException(e);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            logException(e);
+        }
+    }
     private static void afegirProducteElectronica(){}
+
+    //TEXTIL REPETIT:
+    //Comprovem que el producte textil no estigui repetit.
+    public static boolean textilRepetit(String codi){
+        boolean repetit = false;
+        for (Producte p : prodTextil){
+            if (p.getCodiBarres().matches(codi)){
+                repetit = true;
+                break;
+            }
+        }
+        return repetit;
+    }
 
     //FITXER EXCEPTION:
     //Mètode per guardar excepcions en un fitxer .dat

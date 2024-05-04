@@ -4,16 +4,16 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     static Scanner scan = new Scanner(System.in);
     //ARRAYLIST i HASHMAP
     static ArrayList<Producte> productes = new ArrayList<>();
     static ArrayList<Producte> prodTextil = new ArrayList<>();
+    //Utilitzem LinkedHashMap perquè el HashMap quedi ordenat segons com introduïm els productes.
+    static LinkedHashMap<String, String[]> carro = new LinkedHashMap<>();
+    static LinkedHashMap<String, String[]> caixa = new LinkedHashMap<>();
     //VARIABLES GLOBALS
     static String opcio;
     private static final int MAX_CARRO = 100;
@@ -84,6 +84,7 @@ public class Main {
                 case "2":
                     break;
                 case "3":
+                    mostrarCarretCompra();
                     break;
                 case "4":
                     break;
@@ -296,6 +297,39 @@ public class Main {
             }
         }
         return repetit;
+    }
+
+    //MOSTRAR CARRO:
+    //Mètode per afegir a un LinkedHashMap carro, els valors necessaris a imprimir en mostrarCarro i contar les unitats dels productes.
+    public static void afegirACarro(Producte p){
+        //Afegim l'objecte Alimentació,Textil o Electronica en el LinkedHashMap "carro". (En aquest comparem CodiBarres)
+        if (!(carro.containsKey(p.getCodiBarres()))){
+            //Si el codi de barres no es troba al LinkedHashMap carro l'introduim.
+            String[] valorCarro = new String[2];
+            valorCarro[0] = p.getNom();
+            valorCarro[1] = "1";
+            carro.put(p.getCodiBarres(), valorCarro);
+        } else {
+            //Si el trobem al LinkedHashMap "carro" el sumem al codi anterior.
+            String[] valorCarro = new String[2];
+            valorCarro[0] = carro.get(p.getCodiBarres())[0];
+            valorCarro[1] = (Integer.parseInt(carro.get(p.getCodiBarres())[1]) + 1) + "" ;
+            carro.replace(p.getCodiBarres(), valorCarro);
+        }
+    }
+
+    //Mètode per veure tots els productes del carro.
+    public static void  mostrarCarretCompra (){
+        //Cridem el mètode añadirACarro.
+        for(Producte p: productes){
+            afegirACarro(p);
+        }
+        if (carro.isEmpty()){
+            System.out.println("El carro està buit");
+        } else {
+            carro.forEach((k,v) -> System.out.println(v[0] + " -> " + v[1]));
+        }
+        carro.clear();
     }
 
     //FITXER EXCEPTION:

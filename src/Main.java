@@ -3,6 +3,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
     static Scanner scan = new Scanner(System.in);
@@ -16,6 +18,7 @@ public class Main {
     static String opcio;
     private static final int MAX_CARRO = 100;
     private static final int MAX_LLARG = 15;
+
     public static void main(String[] args) {
         //Cridem el mètode crearCarpetasIFitxers per crear les carpetes.
         crearCarpetesIFitxers();
@@ -130,7 +133,6 @@ public class Main {
             }
         } while (!(opcio.equals("0")));
     }
-
     //AFEGIR PRODUCTES:
     //Mètode per afegir un producte alimentacio.
     private static void afegirProducteAlimentacio(){
@@ -184,6 +186,8 @@ public class Main {
             logException(e);
         }
     }
+
+    //Mètode per afegir un producte textil.
     private static void afegirProducteTextil(){
         String nom;
         float preu;
@@ -238,6 +242,8 @@ public class Main {
             logException(e);
         }
     }
+
+    //Mètode per afegir un producte electronic.
     private static void afegirProducteElectronica(){
         String nom;
         float preu;
@@ -303,7 +309,7 @@ public class Main {
     //Mètode per saber el valor total de tota la compra més els detalls dels productes.
     public static void  passarPerCaixa(){
         if (!(productes.isEmpty())){
-
+            //Ordenem l'array
             Collections.sort(productes);
 
             //Cridem el mètode afegirACarroPerCaixa i el mètode llegirPreuTextil per actualitzar preus.
@@ -320,7 +326,8 @@ public class Main {
             System.out.println("-----------------------------");
             System.out.println("Data: " + date);
             System.out.println("-----------------------------");
-
+            //Mostrar LinkedHashMap amb els productes.
+            Collections.sort(productes);
             caixa.forEach((k,v) -> System.out.println(v[0] + " - " + v[1] + " - " + v[2] + " : " + (Float.parseFloat(v[2]) * (Float.parseFloat(v[1])))));
             System.out.println("-----------------------------");
             System.out.printf("Total: %2.2f \n", calculPreuFinal());
@@ -390,6 +397,8 @@ public class Main {
 
     //Mètode per veure tots els productes del carro.
     public static void  mostrarCarretCompra (){
+        //Ordenem l'array
+        Collections.sort(productes);
         //Cridem el mètode añadirACarro.
         for(Producte p: productes){
             afegirACarro(p);

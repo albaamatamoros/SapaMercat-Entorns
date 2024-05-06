@@ -1,7 +1,6 @@
 import java.util.Comparator;
 
 public abstract class Producte implements Comparable<Producte>, Comparator<Producte> {
-
     float preu;
     String nom;
     String codiDeBarres;

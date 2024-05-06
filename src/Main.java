@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -83,11 +80,13 @@ public class Main {
                     introduirProducte();
                     break;
                 case "2":
+                    passarPerCaixa();
                     break;
                 case "3":
                     mostrarCarretCompra();
                     break;
                 case "4":
+                    buscarAmbCodi();
                     break;
                 case "0":
                     break;
@@ -305,8 +304,11 @@ public class Main {
     public static void  passarPerCaixa(){
         if (!(productes.isEmpty())){
 
+            Collections.sort(productes);
+
             //Cridem el mètode afegirACarroPerCaixa i el mètode llegirPreuTextil per actualitzar preus.
             for(Producte p: productes){
+                llegirPreuTextil(p);
                 afegirACarroPerCaixa(p);
             }
 
@@ -423,6 +425,67 @@ public class Main {
             logException(e);
         } catch (Exception ex){
             System.out.println("- No s'ha pogut escriure al fitxer");
+            logException(e);
+        }
+    }
+
+    //FITXER UPDATETEXTILPRICES.DAT:
+    //Mètode per llegir el fitxer UpdateTextilPrices i comprovar els preus segons el codi.
+    public static void llegirPreuTextil(Producte p) {
+        try {
+            File fitxer = new File("./updates/UpdateTextilPrices.dat");
+            HashMap<String, String> textilFitxer = new HashMap<String, String>();
+
+            //Per llegir dades al fitxer.
+            FileReader reader = new FileReader(fitxer);
+            BufferedReader br = new BufferedReader(reader);
+            String fila;
+
+            //Per escriure dades al fitxer
+            FileOutputStream file = new FileOutputStream(fitxer, true);
+            PrintStream writer = new PrintStream(file);
+
+
+            while ((fila = br.readLine()) != null) {
+                String[] valors = fila.split(":");
+                textilFitxer.put(valors[0], valors[1]);
+            }
+
+            String codi = p.getCodiBarres();
+            if (p instanceof Textil){
+                if (textilFitxer.containsKey(codi)) {
+                    //Agafem el preu del fitxer en string.
+                    String preuS = textilFitxer.get(codi);
+                    //El passem a float en una nova variable.
+                    float preu = Float.parseFloat(preuS);
+                    //I donem amb preu el valor actualitzat amb setPreu().
+                    p.setPreu(preu);
+
+                    System.out.println("El preu del producte tèxtil amb codi: " + codi + " ha siguit actualitzat a " + preu);
+                } else {
+                    System.out.println("El codi " + codi + " no s'ha pogut trobar al fitxer de preus");
+                    //Actualitzem el fitxer amb el codi nou i el seu preu.
+                    br.readLine();
+                    writer.println(codi + ":" + p.getPreu());
+                    System.out.println("Nou codi afegit " + codi + " amb el seu respectiu preu " + p.getPreu());
+                    writer.close();
+                }
+            }
+
+            //Hem de modificar el preu en l'array perquè si no aquest canvi no es veuria reflectit.
+            for (int i = 0; i < productes.size(); i++) {
+                if (productes.get(i).getCodiBarres().equals(p.getCodiBarres())) {
+                    productes.get(i).setPreu(p.getPreu());
+                    break;
+                }
+            }
+
+            br.close();
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+            logException(e);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
             logException(e);
         }
     }

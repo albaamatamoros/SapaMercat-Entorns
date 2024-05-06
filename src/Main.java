@@ -305,6 +305,11 @@ public class Main {
     public static void  passarPerCaixa(){
         if (!(productes.isEmpty())){
 
+            //Cridem el mètode afegirACarroPerCaixa i el mètode llegirPreuTextil per actualitzar preus.
+            for(Producte p: productes){
+                afegirACarroPerCaixa(p);
+            }
+
             //Agafem la data actual.
             LocalDate date = LocalDate.now();
             //Menú tiquet.

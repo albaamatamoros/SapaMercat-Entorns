@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 public class Main {
@@ -299,6 +300,68 @@ public class Main {
         return repetit;
     }
 
+    //PASSAR PER CAIXA:
+    //Mètode per saber el valor total de tota la compra més els detalls dels productes.
+    public static void  passarPerCaixa(){
+        if (!(productes.isEmpty())){
+
+            //Agafem la data actual.
+            LocalDate date = LocalDate.now();
+            //Menú tiquet.
+            System.out.println("-----------------------------");
+            System.out.println("SAPAMERCAT");
+            System.out.println("-----------------------------");
+            System.out.println("Data: " + date);
+            System.out.println("-----------------------------");
+
+            caixa.forEach((k,v) -> System.out.println(v[0] + " - " + v[1] + " - " + v[2] + " : " + (Float.parseFloat(v[2]) * (Float.parseFloat(v[1])))));
+            System.out.println("-----------------------------");
+            System.out.printf("Total: %2.2f \n", calculPreuFinal());
+            // Limpiar los productos del carro, de la caixa i de la llista productes.
+            productes.clear();
+            prodTextil.clear();
+            carro.clear();
+            caixa.clear();
+        } else {
+            System.out.println("El carro està buit, no es pot mostrar tiquet");
+        }
+    }
+
+    //Funció que calcula el preu final de la compra.
+    public static float calculPreuFinal(){
+        float preuTotal = 0.0f;
+        //Fem un bucle per poder fer el càlcul de tots els preus dels productes al HashMap.
+        for (Map.Entry<String, String[]> entry : caixa.entrySet()) {
+            String[] v = entry.getValue();
+            float preuUnitari = Float.parseFloat(v[2]);
+            int quantitat = Integer.parseInt(v[1]);
+            preuTotal += preuUnitari * quantitat;
+        }
+        //Retornem el preuTotal per mostrar-lo per pantalla.
+        return preuTotal;
+    }
+
+    //Mètode per afegir a un LinkedHashMap caixa, els valors necessaris a imprimir en passarPerCaixa i contar les unitats dels productes.
+    public static void afegirACarroPerCaixa(Producte p){
+        //Afegim l'objecte Alimentació,Textil o Electronica en el LinkedHashMap "caixa". (En aquest comparem CodiBarres + preuUnitari)
+        String codiPreu = p.getCodiBarres() + p.getPreu();
+        if (!(caixa.containsKey(codiPreu))){
+            //Si no trobem un codi i un preu igual, afegim el producte.
+            String[] valorCarro = new String[3];
+            valorCarro[0] = p.getNom();
+            valorCarro[1] = "1";
+            valorCarro[2] = p.getPreu() + "";
+            caixa.put(codiPreu, valorCarro);
+        } else {
+            //Si el trobem al LinkedHashMap "carro" el sumem al codi anterior.
+            String[] valorCarro = new String[3];
+            valorCarro[0] = caixa.get(codiPreu)[0];
+            valorCarro[1] = (Integer.parseInt(caixa.get(codiPreu)[1]) + 1) + "";
+            valorCarro[2] = p.getPreu() + "";
+            caixa.replace(codiPreu, valorCarro);
+        }
+    }
+
     //MOSTRAR CARRO:
     //Mètode per afegir a un LinkedHashMap carro, els valors necessaris a imprimir en mostrarCarro i contar les unitats dels productes.
     public static void afegirACarro(Producte p){
@@ -355,6 +418,37 @@ public class Main {
             logException(e);
         } catch (Exception ex){
             System.out.println("- No s'ha pogut escriure al fitxer");
+            logException(e);
+        }
+    }
+
+    //BUSCAR PRODUCTE AMB CODI:
+    //Mètode per buscar un producte en concret al carro mitjançant el codi.
+    public static void buscarAmbCodi() {
+        try {
+            if (!(productes.isEmpty())){
+                //Demanem per pantalla el codi que volem buscar, si el carro està buit directament informarem l'usuari.
+                System.out.println("Introdueix un codi per cercar el nom del producte:");
+                String codiBarres = scan.nextLine().trim();
+
+                if (!codiBarres.matches("\\d{4}")) throw new IllegalArgumentException("El codi de barres ha de ser de 4 digits i només pot contenir números");
+
+                //Optional és una classe que pot contenir un valor.
+                //Busquem el producte mitjançant filtres utilitzant stream i una expressió lambda.
+                Optional<Producte> producteTrobat = productes.stream().filter(producte -> codiBarres.equals(producte.getCodiBarres())).findFirst();
+
+                //Comprobem si l'hem trobat o no, per mostra un missatge.
+                //isPresent l'utilitzem per saber si a trobat el rpoducte amb aquest codi.
+                if (producteTrobat.isPresent()) {
+                    System.out.println("El producte cercat és: " + producteTrobat.get().getNom());
+                } else {
+                    System.out.println("El codi introduït no existeix al carro");
+                }
+            } else {
+                System.out.println("El carro és buit, no es pot trobar cap producte");
+            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
             logException(e);
         }
     }

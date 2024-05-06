@@ -18,7 +18,7 @@ public class Main {
     static String opcio;
     private static final int MAX_CARRO = 100;
     private static final int MAX_LLARG = 15;
-
+    // Marcs a estat en aquest repositori
     public static void main(String[] args) {
         //Cridem el mètode crearCarpetasIFitxers per crear les carpetes.
         crearCarpetesIFitxers();

@@ -1,5 +1,4 @@
 public class Electronica extends Producte{
-
     int diesDeGarantia;
 
     //CONSTRUCTOR Electronica
@@ -16,6 +15,10 @@ public class Electronica extends Producte{
         this.diesDeGarantia = diesDeGarantia;
     }
 
+    public float getPreu() {
+        float preu = super.getPreu();
+        return (float) (preu + preu * ( diesDeGarantia / 365) * 0.1);
+    }
 
     @Override
     public String toString() {

@@ -25,6 +25,7 @@ public class Main {
         //Cridem el mètode menuInici.
         menuInici();
     }
+    //FALTA PERE PI (FIRMA: ALEXANDRU AMARIEI)
 
     //CREACIÓ CARPETAS I FITXERS:
     public static void crearCarpetesIFitxers(){
